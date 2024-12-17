@@ -66,7 +66,7 @@ Provide you can create immutable state easily with mutable way in reducer way.
 > For return values that do not contain any drafts, you can use `rawReturn()` to wrap this return value to improve performance. It ensure that the return value is only returned explicitly.
 
 ```tsx
-import { rawReturn } from 'mutative';
+import { rawReturn } from '@thomasjahoda-forks/mutative';
 import { useMutativeReducer } from 'use-mutative';
 
 const initialState = {

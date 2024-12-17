@@ -191,7 +191,7 @@ ___
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
-import { type Draft } from 'mutative';
+import { type Draft } from '@thomasjahoda-forks/mutative';
 
 import { useMutativeReducer } from '../src/index';
 
@@ -251,7 +251,7 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
-import { type Draft } from 'mutative';
+import { type Draft } from '@thomasjahoda-forks/mutative';
 
 import { useMutativeReducer } from '../src/index';
 
@@ -310,7 +310,7 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
-import { type Draft } from 'mutative';
+import { type Draft } from '@thomasjahoda-forks/mutative';
 
 import { useMutativeReducer } from '../src/index';
 

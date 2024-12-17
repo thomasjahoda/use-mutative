@@ -1,6 +1,6 @@
 import { jsdocTests } from 'jsdoc-tests';
 import { act, renderHook } from '@testing-library/react';
-import { rawReturn, type Draft, apply } from 'mutative';
+import { rawReturn, type Draft, apply } from '@thomasjahoda-forks/mutative';
 import React, { useState } from 'react';
 
 import { useMutative, useMutativeReducer } from '../src/index';

@@ -43,5 +43,5 @@ export default {
     }),
     terser(),
   ],
-  external: ['mutative', 'react'],
+  external: ['mutative', '@thomasjahoda-forks/mutative', 'react'],
 };
