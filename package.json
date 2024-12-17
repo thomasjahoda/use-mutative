@@ -1,6 +1,6 @@
 {
   "name": "@thomasjahoda-forks/use-mutative",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A hook to use Mutative as a React hook to efficient update react state immutable with mutable way",
   "main": "dist/index.cjs.js",
   "unpkg": "dist/index.umd.js",
@@ -93,7 +93,7 @@
   },
   "peerDependencies": {
     "@types/react": "^16.8 || 18.0 || ^17.0 || ^19.0",
-    "mutative": "^1.0",
+    "@thomasjahoda-forks/mutative": "^1.1",
     "react": "^16.8 || ^17.0 || ^18.0 || ^19.0"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
