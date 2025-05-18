@@ -1,18 +1,18 @@
 import {
   create,
-  type Immutable,
-  type Patches,
-  type Options,
   type Draft,
+  type Immutable,
+  type Options,
+  type Patches,
 } from '@thomasjahoda-forks/mutative';
 import {
-  useState,
-  useReducer,
-  useCallback,
-  useMemo,
-  useRef,
   Dispatch,
+  useCallback,
   useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
 } from 'react';
 
 type PatchesOptions =
@@ -33,13 +33,32 @@ type Updater<S> = (value: S | (() => S) | DraftFunction<S>) => void;
 
 type InitialValue<I extends any> = I extends (...args: any) => infer R ? R : I;
 
+interface RequiredReadonlyRefObject<T> {
+  /**
+   * The current value of the ref.
+   */
+  readonly current: T;
+}
+
 type Result<S, O extends PatchesOptions, F extends boolean> = O extends
   | true
   | object
-  ? [F extends true ? Immutable<S> : S, Updater<S>, Patches<O>, Patches<O>]
+  ? [
+      F extends true ? Immutable<S> : S,
+      Updater<S>,
+      Patches<O>,
+      Patches<O>,
+      RequiredReadonlyRefObject<S>,
+    ]
   : F extends true
-    ? [Immutable<S>, Updater<S>]
-    : [S, Updater<S>];
+    ? [
+        Immutable<S>,
+        Updater<S>,
+        undefined,
+        undefined,
+        RequiredReadonlyRefObject<S>,
+      ]
+    : [S, Updater<S>, undefined, undefined, RequiredReadonlyRefObject<S>];
 
 /**
  * `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
@@ -97,6 +116,7 @@ function useMutative<
   const [state, setState] = useState(() =>
     typeof initialValue === 'function' ? initialValue() : initialValue
   );
+  const stateRef = useRef(state);
   const updateState = useCallback((updater: any) => {
     setState((latest: any) => {
       const updaterFn = typeof updater === 'function' ? updater : () => updater;
@@ -116,6 +136,7 @@ function useMutative<
         }
         return result[0];
       }
+      stateRef.current = result;
       return result;
     });
   }, []);
@@ -133,8 +154,9 @@ function useMutative<
           updateState,
           patchesRef.current.patches,
           patchesRef.current.inversePatches,
+          stateRef,
         ]
-      : [state, updateState]
+      : [state, updateState, undefined, undefined, stateRef]
   ) as Result<InitialValue<S>, O, F>;
 }
 
