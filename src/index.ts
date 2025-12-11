@@ -60,6 +60,13 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
       ]
     : [S, Updater<S>, undefined, undefined, RequiredReadonlyRefObject<S>];
 
+export type _SimpleUseStateFn = <T>(
+  initialState: T | (() => T)
+) => [T, (value: T) => void];
+export type SimpleUseStateFnForSpecificType<T> = (
+  initialState: T | (() => T)
+) => [T, (value: T) => void];
+
 /**
  * `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
  *
@@ -93,7 +100,9 @@ function useMutative<
   /**
    * Options for the `useMutative` hook.
    */
-  options?: Options<O, F>
+  options?: Options<O, F> & {
+    useStateFnOverride?: SimpleUseStateFnForSpecificType<S>;
+  }
 ) {
   const patchesRef = useRef<{
     patches: Patches;
@@ -113,12 +122,13 @@ function useMutative<
   currentCount += 1;
   renderCount.current += 1;
   //#endregion
-  const [state, setState] = useState(() =>
-    typeof initialValue === 'function' ? initialValue() : initialValue
-  );
-  const stateRef = useRef(state);
+  const [state, setState] = (options?.useStateFnOverride ?? useState)(
+    // typeof initialValue === 'function' ? initialValue() : initialValue
+    initialValue
+  ) as unknown as [S, (value: S) => void];
+  const stateRef = useRef<S>(state);
   const updateState = useCallback((updater: any) => {
-    setState((latest: any) => {
+    const result = ((latest: any) => {
       const updaterFn = typeof updater === 'function' ? updater : () => updater;
       const result = create(latest, updaterFn, options);
       if (options?.enablePatches) {
@@ -135,10 +145,12 @@ function useMutative<
           );
         }
         return result[0];
+      } else {
+        return result;
       }
-      stateRef.current = result;
-      return result;
-    });
+    })(stateRef.current);
+    stateRef.current = result;
+    setState(result);
   }, []);
   useEffect(() => {
     if (options?.enablePatches) {
